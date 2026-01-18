@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from relationship_app.models import Book, Library
+from .models import Book, Library
 
 def list_books(request):
     books = Book.objects.all()
