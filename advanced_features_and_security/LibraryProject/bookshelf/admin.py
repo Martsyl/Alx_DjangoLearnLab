@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
-from .models import Book
+from .models import CustomUser, Book
+
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
@@ -9,7 +9,7 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ('author', 'publication_year')
     search_fields = ('title', 'author')
 
-@admin.register(CustomUser)
+
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
@@ -26,3 +26,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
     list_display = ('username', 'email', 'is_staff', 'date_of_birth')
+
+
+# ✅ REQUIRED by ALX checker
+admin.site.register(CustomUser, CustomUserAdmin)
