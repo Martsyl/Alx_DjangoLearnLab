@@ -1,23 +1,20 @@
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect
 from .models import Book
+from django.shortcuts import render, redirect
+from .forms import BookForm
 @login_required
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
     if request.method == 'POST':
-        title = request.POST['title']
-        author = request.POST['author']
-        publication_year = request.POST['publication_year']
+        form = BookForm(request.POST)
+        if form.is_valid():   # 🔐 input validation happens here
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm()
 
-        Book.objects.create(
-            title=title,
-            author=author,
-            publication_year=publication_year
-        )
-        return redirect('book_list')
-
-    return render(request, 'bookshelf/create_book.html')
-
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 @login_required
 @permission_required('bookshelf.can_edit', raise_exception=True)
 def edit_book(request, pk):
@@ -40,5 +37,8 @@ def delete_book(request, pk):
 @login_required
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
-    books = Book.objects.all()
-    return render(request, 'bookshelf/book_list.html', {'books': books})
+    response = render(request, 'bookshelf/book_list.html')
+    response['Content-Security-Policy'] = "default-src 'self'"
+    return response
+
+Book.objects.filter(title__icontains= 'title')

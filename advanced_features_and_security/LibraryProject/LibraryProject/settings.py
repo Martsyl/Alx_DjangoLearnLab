@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2#z71fei2^0aha!c08q-dco$0-f^erl_gsb942-42pw58h+z!4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -123,3 +123,8 @@ STATIC_URL = 'static/'
 # Redirect after login/logout
 LOGIN_REDIRECT_URL = 'list_books'  # or any URL name
 LOGOUT_REDIRECT_URL = 'login'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
