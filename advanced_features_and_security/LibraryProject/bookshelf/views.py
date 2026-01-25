@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from .models import Book
 from django.shortcuts import render, redirect
 from .forms import BookForm
+from .forms import ExampleForm
+
 @login_required
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
@@ -40,5 +42,14 @@ def book_list(request):
     response = render(request, 'bookshelf/book_list.html')
     response['Content-Security-Policy'] = "default-src 'self'"
     return response
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # handle form.cleaned_data here
+            pass
+    else:
+        form = ExampleForm()
 
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 Book.objects.filter(title__icontains= 'title')
