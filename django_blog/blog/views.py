@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, UserUpdateForm 
 from .models import Comment
 from .forms import CommentForm
+from taggit.models import Tag
+
 
 def home(request):
     return render(request, 'blog/base.html')
@@ -163,9 +165,7 @@ class SearchResultsView(ListView):
                 Q(tags__name__icontains=query)
             ).distinct()
         return Post.objects.none()
-from taggit.models import Tag
-
-class TaggedPostListView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/tagged_posts.html'
     context_object_name = 'posts'
