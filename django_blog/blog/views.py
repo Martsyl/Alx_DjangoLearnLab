@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, UserUpdateForm
+from .forms import RegisterForm, UserUpdateForm 
+from .models import Comment
+from .forms import CommentForm
+
 def home(request):
     return render(request, 'blog/base.html')
 
@@ -85,3 +88,38 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all().order_by('-created_at')
+        context['comment_form'] = CommentForm()
+        return context
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def add_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
+
+    return redirect('post-detail', pk=post.pk)
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
