@@ -23,3 +23,12 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+from taggit.forms import TagWidget
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # add tags field
+        widgets = {
+            'tags': TagWidget(),  # nice input for tags
+        }
