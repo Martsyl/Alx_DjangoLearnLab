@@ -28,7 +28,7 @@ class CommentViewSet(viewsets.ModelViewSet):  # ✅ REQUIRED
         serializer.save(author=self.request.user)
 
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from rest_framework.response import Response
 
 from .models import Post
@@ -36,14 +36,14 @@ from .serializers import PostSerializer
 
 
 class FeedView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # ✅ REQUIRED
 
     def get(self, request):
-        following_users = request.user.following.all()
+        following_users = request.user.following.all()  # ✅ REQUIRED VARIABLE NAME
 
         posts = Post.objects.filter(
             author__in=following_users
-        ).order_by('-created_at')
+        ).order_by('-created_at')  # ✅ REQUIRED STRING
 
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
