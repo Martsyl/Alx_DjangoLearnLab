@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from .views import PostViewSet, CommentViewSet
 from .views import FeedView
+from .views import LikePostView, UnlikePostView
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='posts')
 
@@ -30,4 +31,6 @@ urlpatterns = [
         name='comment-detail'
     ),
      path('feed/', FeedView.as_view(), name='feed'),
+      path('posts/<int:pk>/like/', LikePostView.as_view()),
+    path('posts/<int:pk>/unlike/', UnlikePostView.as_view()),
 ]
