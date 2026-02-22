@@ -36,14 +36,13 @@ from .serializers import PostSerializer
 
 
 class FeedView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  # ✅ REQUIRED
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        following_users = request.user.following.all()  # ✅ REQUIRED VARIABLE NAME
+        following_users = request.user.following.all()
 
-        posts = Post.objects.filter(
-            author__in=following_users
-        ).order_by('-created_at')  # ✅ REQUIRED STRING
+        # 🔥 DO NOT BREAK THIS LINE
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
 
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
